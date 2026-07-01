@@ -1,0 +1,22 @@
+@use '../styles/variables' as *;
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.label {
+  color: $color-text-secondary;
+}
+
+.fields {
+  align-items: center;
+}
+
+.separator {
+  font-size: 1.25rem;
+  font-weight: $font-weight-semibold;
+  color: $color-text-secondary;
+  padding-bottom: 2px;
+}

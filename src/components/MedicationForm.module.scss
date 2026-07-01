@@ -1,0 +1,17 @@
+@use '../styles/variables' as *;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.submitButton {
+  margin-top: $spacing-xs;
+}
+
+.formWithError {
+  .submitButton {
+    margin-top: 0;
+  }
+}

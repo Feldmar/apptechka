@@ -1,0 +1,140 @@
+@use '../styles/variables' as *;
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.calendar,
+.details {
+  padding: $spacing-lg;
+  border-radius: $border-radius;
+  box-shadow: $shadow-card;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
+}
+
+.monthTitle {
+  font-weight: $font-weight-semibold;
+  text-transform: capitalize;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: $spacing-xs;
+  margin-bottom: $spacing-sm;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: $font-weight-medium;
+  color: $color-text-secondary;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: $spacing-xs;
+}
+
+.day {
+  position: relative;
+  min-height: 44px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font: inherit;
+  color: inherit;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: rgba($color-primary, 0.08);
+  }
+}
+
+.dayOutside {
+  color: $color-text-disabled;
+}
+
+.dayToday {
+  border-color: rgba($color-primary, 0.35);
+}
+
+.daySelected {
+  background: rgba($color-primary, 0.14);
+  border-color: $color-primary;
+}
+
+.dayWithIntakes .dot {
+  display: flex;
+}
+
+.dot {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: $color-primary;
+  color: #fff;
+  font-size: 0.65rem;
+  line-height: 1;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  padding: $spacing-xl 0;
+}
+
+.detailsTitle {
+  font-weight: $font-weight-semibold;
+  margin-bottom: $spacing-md;
+}
+
+.intakeList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.intakeItem {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-sm;
+  padding: $spacing-sm 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.intakeName {
+  font-weight: $font-weight-medium;
+}
+
+.intakeNote {
+  margin-top: $spacing-xs;
+  font-style: italic;
+}

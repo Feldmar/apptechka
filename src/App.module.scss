@@ -1,0 +1,61 @@
+@use './styles/variables' as *;
+
+.root {
+  min-height: 100vh;
+  background-color: $color-bg;
+}
+
+.headerIcon {
+  margin-right: 12px;
+}
+
+.title {
+  font-weight: $font-weight-semibold;
+}
+
+.container {
+  padding-top: $spacing-lg;
+  padding-bottom: $spacing-lg;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.card {
+  padding: $spacing-lg;
+  border-radius: $border-radius;
+  box-shadow: $shadow-card;
+}
+
+.cardTitle {
+  font-weight: $font-weight-semibold;
+  margin-bottom: $spacing-sm;
+}
+
+.cardDescription {
+  margin-bottom: $spacing-md;
+  color: $color-text-secondary;
+}
+
+.sectionTitle {
+  font-weight: $font-weight-semibold;
+  margin-bottom: $spacing-sm;
+}
+
+.count {
+  margin-left: $spacing-sm;
+  color: $color-text-secondary;
+}
+
+.tabs {
+  margin-bottom: $spacing-lg;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  padding: $spacing-xl 0;
+}

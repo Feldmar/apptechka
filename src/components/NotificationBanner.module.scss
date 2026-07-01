@@ -1,0 +1,16 @@
+@use '../styles/variables' as *;
+
+.banner_warning,
+.banner_success,
+.banner_error,
+.banner_info {
+  border-radius: $border-radius;
+}
+
+.title {
+  font-weight: $font-weight-medium;
+}
+
+.description {
+  margin-top: $spacing-xs;
+}
