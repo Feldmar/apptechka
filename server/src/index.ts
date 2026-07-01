@@ -1,5 +1,6 @@
 import cors from 'cors'
 import express from 'express'
+import authRouter from './routes/auth.js'
 import intakesRouter from './routes/intakes.js'
 import medicationsRouter from './routes/medications.js'
 
@@ -13,6 +14,7 @@ app.get('/api/health', (_req, res) => {
   res.json({ ok: true })
 })
 
+app.use('/api/auth', authRouter)
 app.use('/api/medications', medicationsRouter)
 app.use('/api/intakes', intakesRouter)
 

@@ -1,9 +1,12 @@
 import { Router } from 'express'
 import { v4 as uuidv4 } from 'uuid'
-import db from '../db.js'
+import { requireAuth } from '../middleware/auth.js'
+import { getUserDb } from '../userDb.js'
 import type { MedicationRow } from '../types.js'
 
 const router = Router()
+
+router.use(requireAuth)
 
 function mapMedication(row: MedicationRow) {
   return {
@@ -17,7 +20,9 @@ function mapMedication(row: MedicationRow) {
   }
 }
 
-router.get('/', (_req, res) => {
+router.get('/', (req, res) => {
+  const db = getUserDb(req.user!.id)
+
   const rows = db
     .prepare(
       `SELECT * FROM medications ORDER BY has_reminder DESC, time ASC, name ASC`,
@@ -28,6 +33,7 @@ router.get('/', (_req, res) => {
 })
 
 router.post('/', (req, res) => {
+  const db = getUserDb(req.user!.id)
   const { name, dosage, time, hasReminder = true } = req.body as {
     name?: string
     dosage?: string
@@ -58,6 +64,7 @@ router.post('/', (req, res) => {
 })
 
 router.delete('/:id', (req, res) => {
+  const db = getUserDb(req.user!.id)
   const result = db.prepare('DELETE FROM medications WHERE id = ?').run(req.params.id)
 
   if (result.changes === 0) {
@@ -69,6 +76,7 @@ router.delete('/:id', (req, res) => {
 })
 
 router.patch('/:id/notified', (req, res) => {
+  const db = getUserDb(req.user!.id)
   const { date } = req.body as { date?: string }
 
   if (!date) {

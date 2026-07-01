@@ -9,6 +9,25 @@
   margin-right: 12px;
 }
 
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: $spacing-md;
+}
+
+.toolbarStart {
+  display: flex;
+  align-items: center;
+}
+
+.username {
+  opacity: 0.85;
+}
+
+.logoutButton {
+  flex-shrink: 0;
+}
+
 .title {
   font-weight: $font-weight-semibold;
 }

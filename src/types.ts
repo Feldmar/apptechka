@@ -37,3 +37,5 @@ export interface CreateIntakeData {
   takenAt?: string
   note?: string | null
 }
+
+export type { User, AuthResponse, LoginData, RegisterData } from './types/auth'

@@ -1,0 +1,50 @@
+@use '../styles/variables' as *;
+
+.root {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-lg;
+  background-color: $color-bg;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  padding: $spacing-xl;
+  border-radius: $border-radius;
+  box-shadow: $shadow-card;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-lg;
+}
+
+.logo {
+  font-size: 48px;
+  color: $color-primary;
+}
+
+.title {
+  font-weight: $font-weight-semibold;
+}
+
+.tabs {
+  margin-bottom: $spacing-lg;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.formWithError {
+  gap: $spacing-sm;
+}

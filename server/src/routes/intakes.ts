@@ -1,9 +1,12 @@
 import { Router } from 'express'
 import { v4 as uuidv4 } from 'uuid'
-import db from '../db.js'
+import { requireAuth } from '../middleware/auth.js'
+import { getUserDb } from '../userDb.js'
 import type { IntakeWithMedication } from '../types.js'
 
 const router = Router()
+
+router.use(requireAuth)
 
 function mapIntake(row: IntakeWithMedication) {
   return {
@@ -18,6 +21,7 @@ function mapIntake(row: IntakeWithMedication) {
 }
 
 router.get('/', (req, res) => {
+  const db = getUserDb(req.user!.id)
   const { from, to } = req.query as { from?: string; to?: string }
 
   let query = `
@@ -52,6 +56,7 @@ router.get('/', (req, res) => {
 })
 
 router.post('/', (req, res) => {
+  const db = getUserDb(req.user!.id)
   const { medicationId, takenAt, note } = req.body as {
     medicationId?: string
     takenAt?: string
@@ -99,6 +104,7 @@ router.post('/', (req, res) => {
 })
 
 router.delete('/:id', (req, res) => {
+  const db = getUserDb(req.user!.id)
   const result = db.prepare('DELETE FROM intakes WHERE id = ?').run(req.params.id)
 
   if (result.changes === 0) {
