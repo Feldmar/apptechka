@@ -27,3 +27,4 @@ readme.md
 *.sw?
 
 .env
+.env.*

@@ -20,7 +20,8 @@ interface MedicationFormProps {
 const initialForm: MedicationFormData = {
   name: '',
   dosage: '',
-  time: '09:00',
+  multiplicity: 1,
+  times: ['09:00'],
   hasReminder: true,
 }
 
@@ -43,15 +44,22 @@ export function MedicationForm({ onAdd }: MedicationFormProps) {
       return
     }
 
-    if (form.hasReminder && !form.time) {
-      setError('Укажите время приёма')
+    if (
+      form.hasReminder &&
+      form.times.some((time) => !time)
+    ) {
+      setError('Укажите время каждого приема')
       return
     }
 
     try {
       setSubmitting(true)
       await onAdd(form)
-      setForm({ ...initialForm, time: form.time, hasReminder: form.hasReminder })
+      setForm({
+        ...initialForm,
+        times: form.times,
+        hasReminder: form.hasReminder,
+      })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Не удалось добавить препарат')
     } finally {
@@ -84,6 +92,25 @@ export function MedicationForm({ onAdd }: MedicationFormProps) {
         fullWidth
         required
       />
+      
+      <TextField
+        label="Кратность приема"
+        type="number"
+        value={form.multiplicity}
+        onChange={(e) => {
+          const multiplicity = Math.max(1, Number(e.target.value))
+
+          setForm((prev) => ({
+            ...prev,
+            multiplicity,
+            times: Array.from({ length: multiplicity }, (_, index) =>
+              prev.times[index] ?? '09:00'
+            ),
+          }))
+        }}
+        fullWidth
+        required
+      />
 
       <FormControlLabel
         control={
@@ -97,12 +124,22 @@ export function MedicationForm({ onAdd }: MedicationFormProps) {
         label="Экстренный препарат (без напоминания)"
       />
 
-      {form.hasReminder && (
-        <TimeInput24
-          value={form.time}
-          onChange={(time) => setForm({ ...form, time })}
-        />
-      )}
+      {form.hasReminder &&
+        form.times.map((time, index) => (
+          <TimeInput24
+            key={index}
+            value={time}
+            onChange={(newTime) => {
+              const times = [...form.times]
+              times[index] = newTime
+
+              setForm({
+                ...form,
+                times,
+              })
+            }}
+          />
+        ))}
 
       <Button
         type="submit"

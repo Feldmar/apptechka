@@ -20,7 +20,7 @@
   align-items: center;
 }
 
-.username {
+.email {
   opacity: 0.85;
 }
 
@@ -55,7 +55,7 @@
 }
 
 .cardDescription {
-  margin-bottom: $spacing-md;
+  margin-bottom: $spacing-md!important;
   color: $color-text-secondary;
 }
 

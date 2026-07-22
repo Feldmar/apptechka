@@ -16,10 +16,11 @@ export interface CreateMedicationData {
 }
 
 export interface MedicationFormData {
-  name: string
-  dosage: string
-  time: string
-  hasReminder: boolean
+  name: string;
+  dosage: string;
+  multiplicity: number;
+  times: string[];
+  hasReminder: boolean;
 }
 
 export interface Intake {

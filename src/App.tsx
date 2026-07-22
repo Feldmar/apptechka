@@ -69,8 +69,8 @@ export default function App() {
               <Typography variant="h6" component="h1" className={styles.title}>
                 Аптечка
               </Typography>
-              <Typography variant="caption" className={styles.username}>
-                {user?.username}
+              <Typography variant="caption" className={styles.email}>
+                {user?.email}
               </Typography>
             </div>
           </div>

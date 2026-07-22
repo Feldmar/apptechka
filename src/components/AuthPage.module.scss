@@ -48,3 +48,14 @@
 .formWithError {
   gap: $spacing-sm;
 }
+.toggleVisability{
+  position: absolute;
+      margin-left: 0;
+    right: 15px;
+}
+.inputPassword{
+  :global(.MuiInputBase-root){
+  padding: 0;
+  }
+
+}
