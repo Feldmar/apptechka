@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import {
+  Box,
   Button,
   Chip,
   IconButton,
   List,
   ListItem,
-  ListItemText,
   Paper,
   Typography,
 } from '@mui/material'
@@ -57,37 +57,33 @@ function MedicationItem({ medication, onRemove, onLogIntake }: MedicationItemPro
           <EmergencyIcon color="secondary" className={styles.icon} />
         )}
 
-        <ListItemText
-          className={styles.content}
-          primary={
-            <div className={styles.titleRow}>
-              <Typography variant="subtitle1" className={styles.name}>
-                {medication.name}
-              </Typography>
-              {!medication.hasReminder && (
-                <Chip label="Экстренный" size="small" color="secondary" />
-              )}
-            </div>
-          }
-          secondary={
-            <div className={styles.details}>
-              <Typography variant="body2" className={styles.dosage}>
-                Дозировка: {medication.dosage}
-              </Typography>
-              {medication.hasReminder &&
-                medication.times.length > 0 &&
-                medication.times.map((time, index) => (
-                  <div key={time + index} className={styles.timeRow}>
-                    <AccessTimeIcon className={styles.timeIcon} />
-                    <Typography variant="body2" className={styles.timeText}>
-                      {formatTimeDisplay(time)}
-                      {index === 0 && countdown ? ` · ${countdown}` : ""}
-                    </Typography>
-                  </div>
-                ))}
-            </div>
-          }
-        />
+        <Box className={styles.content}>
+          <div className={styles.titleRow}>
+            <Typography variant="subtitle1" className={styles.name}>
+              {medication.name}
+            </Typography>
+
+            {!medication.hasReminder && (
+              <Chip label="Экстренный" size="small" color="secondary" />
+            )}
+          </div>
+
+          <Typography variant="body2" className={styles.dosage}>
+            Дозировка: {medication.dosage}
+          </Typography>
+
+          {medication.hasReminder &&
+            medication.times.length > 0 &&
+            medication.times.map((time, index) => (
+              <div key={time + index} className={styles.timeRow}>
+                <AccessTimeIcon className={styles.timeIcon} />
+                <Typography variant="body2" className={styles.timeText}>
+                  {formatTimeDisplay(time)}
+                  {index === 0 && countdown ? ` · ${countdown}` : ''}
+                </Typography>
+              </div>
+            ))}
+        </Box>
 
         <div className={styles.actions}>
           <Button
