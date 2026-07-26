@@ -2,7 +2,7 @@ export interface Medication {
   id: string
   name: string
   dosage: string
-  time: string | null
+  times: string[];
   hasReminder: boolean
   lastNotifiedDate: string | null
   createdAt: string
@@ -11,7 +11,7 @@ export interface Medication {
 export interface CreateMedicationData {
   name: string
   dosage: string
-  time: string | null
+  times: string[]
   hasReminder: boolean
 }
 

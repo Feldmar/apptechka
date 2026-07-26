@@ -2,14 +2,16 @@ import type { Medication } from '../types'
 import { getCurrentTimeString, getTodayDateString } from './time'
 
 export function shouldNotify(medication: Medication): boolean {
-  if (!medication.hasReminder || !medication.time) {
-    return false
+  if (!medication.hasReminder || medication.times.length === 0) {
+    return false;
   }
 
-  const today = getTodayDateString()
-  const now = getCurrentTimeString()
+  const today = getTodayDateString();
+  const now = getCurrentTimeString();
 
-  return medication.time === now && medication.lastNotifiedDate !== today
+  return (
+    medication.times.includes(now) && medication.lastNotifiedDate !== today
+  );
 }
 
 export function markNotified(medication: Medication): Medication {

@@ -26,7 +26,7 @@ interface MedicationItemProps {
 }
 
 function MedicationItem({ medication, onRemove, onLogIntake }: MedicationItemProps) {
-  const countdown = useCountdown(medication.time)
+  const countdown = useCountdown(medication.times)
   const [logging, setLogging] = useState(false)
   const [removing, setRemoving] = useState(false)
 
@@ -74,14 +74,17 @@ function MedicationItem({ medication, onRemove, onLogIntake }: MedicationItemPro
               <Typography variant="body2" className={styles.dosage}>
                 Дозировка: {medication.dosage}
               </Typography>
-              {medication.hasReminder && medication.time && (
-                <div className={styles.timeRow}>
-                  <AccessTimeIcon className={styles.timeIcon} />
-                  <Typography variant="body2" className={styles.timeText}>
-                    {formatTimeDisplay(medication.time)} · {countdown}
-                  </Typography>
-                </div>
-              )}
+              {medication.hasReminder &&
+                medication.times.length > 0 &&
+                medication.times.map((time, index) => (
+                  <div key={time + index} className={styles.timeRow}>
+                    <AccessTimeIcon className={styles.timeIcon} />
+                    <Typography variant="body2" className={styles.timeText}>
+                      {formatTimeDisplay(time)}
+                      {index === 0 && countdown ? ` · ${countdown}` : ""}
+                    </Typography>
+                  </div>
+                ))}
             </div>
           }
         />

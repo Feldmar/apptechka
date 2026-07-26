@@ -20,9 +20,9 @@ export function useReminders() {
       setMedications(
         data.map((medication) => ({
           ...medication,
-          time: medication.time ? normalizeTime(medication.time) : null,
+          times: medication.times.map(normalizeTime),
         })),
-      )
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Не удалось загрузить препараты')
     } finally {
@@ -36,26 +36,30 @@ export function useReminders() {
 
   const addMedication = useCallback(async (data: MedicationFormData) => {
     const created = await api.createMedication({
-      name: data.name.trim(),
-      dosage: data.dosage.trim(),
-      time: data.hasReminder ? normalizeTime(data.time) : null,
-      hasReminder: data.hasReminder,
-    })
+  name: data.name.trim(),
+  dosage: data.dosage.trim(),
+  times: data.hasReminder
+    ? data.times.map(normalizeTime)
+    : [],
+  hasReminder: data.hasReminder,
+})
 
     setMedications((prev) =>
-      [...prev, { ...created, time: created.time ? normalizeTime(created.time) : null }].sort(
-        (a, b) => {
-          if (a.hasReminder !== b.hasReminder) {
-            return Number(b.hasReminder) - Number(a.hasReminder)
-          }
+      [...prev, created].sort((a, b) => {
+        if (a.hasReminder !== b.hasReminder) {
+          return Number(b.hasReminder) - Number(a.hasReminder);
+        }
 
-          if (a.time && b.time) return a.time.localeCompare(b.time)
-          if (a.time) return -1
-          if (b.time) return 1
-          return a.name.localeCompare(b.name)
-        },
-      ),
-    )
+        const aTime = a.times[0];
+        const bTime = b.times[0];
+
+        if (aTime && bTime) return aTime.localeCompare(bTime);
+        if (aTime) return -1;
+        if (bTime) return 1;
+
+        return a.name.localeCompare(b.name);
+      }),
+    );
   }, [])
 
   const removeMedication = useCallback(async (id: string) => {
