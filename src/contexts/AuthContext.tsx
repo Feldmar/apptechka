@@ -7,8 +7,8 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { api, clearToken, setToken as saveToken } from '../api/client'
-import { getToken } from '../utils/authStorage'
+
+import { api, setUnauthorizedHandler } from '../api/client'
 import type { LoginData, RegisterData, User } from '../types'
 
 interface AuthContextValue {
@@ -17,7 +17,7 @@ interface AuthContextValue {
   isAuthenticated: boolean
   login: (data: LoginData) => Promise<void>
   register: (data: RegisterData) => Promise<void>
-  logout: () => void
+  logout: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -26,39 +26,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const logout = useCallback(() => {
-    clearToken()
-    setUser(null)
+  useEffect(() => {
+    setUnauthorizedHandler(() => {
+      setUser(null)
+    })
+
+    return () => {
+      setUnauthorizedHandler(() => { })
+    }
   }, [])
 
   useEffect(() => {
-    const token = getToken()
-
-    if (!token) {
-      setLoading(false)
-      return
-    }
-
     void api
       .getMe()
       .then(setUser)
       .catch(() => {
-        clearToken()
         setUser(null)
       })
-      .finally(() => setLoading(false))
+      .finally(() => {
+        setLoading(false)
+      })
   }, [])
 
   const login = useCallback(async (data: LoginData) => {
     const response = await api.login(data)
-    saveToken(response.token)
     setUser(response.user)
   }, [])
 
   const register = useCallback(async (data: RegisterData) => {
     const response = await api.register(data)
-    saveToken(response.token)
     setUser(response.user)
+  }, [])
+
+  const logout = useCallback(async () => {
+    try {
+      await api.logout()
+    } finally {
+      setUser(null)
+    }
   }, [])
 
   const value = useMemo(
