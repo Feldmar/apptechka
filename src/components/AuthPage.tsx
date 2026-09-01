@@ -1,5 +1,5 @@
-import { useState, type ChangeEvent, type FormEvent } from 'react'
-import cn from 'classnames'
+import { useState, type ChangeEvent, type FormEvent } from 'react';
+import cn from 'classnames';
 import {
   Alert,
   Box,
@@ -11,118 +11,118 @@ import {
   Tabs,
   TextField,
   Typography,
-} from '@mui/material'
-import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy'
-import LoginIcon from '@mui/icons-material/Login'
-import PersonAddIcon from '@mui/icons-material/PersonAdd'
-import { useAuth } from '../contexts/AuthContext'
-import styles from './AuthPage.module.scss'
-import { Visibility, VisibilityOff } from '@mui/icons-material'
+} from '@mui/material';
+import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
+import LoginIcon from '@mui/icons-material/Login';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { useAuth } from '../contexts/AuthContext';
+import styles from './AuthPage.module.scss';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { StoneCheckbox } from '../ui/StoneCheckbox';
 
-type AuthMode = 'login' | 'register'
+type AuthMode = 'login' | 'register';
 
 export function AuthPage() {
-  const { login, register } = useAuth()
-  const [mode, setMode] = useState<AuthMode>('login')
-  const [email, setEmail] = useState('')
-  const [emailError, setEmailError] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const [submitting, setSubmitting] = useState(false)
-  const [passwordError, setPasswordError] = useState("")
+  const { login, register } = useAuth();
+  const [mode, setMode] = useState<AuthMode>('login');
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  
   const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault()
-    setError(null)
+    event.preventDefault();
+    setError(null);
 
     if (!email.trim() || !password) {
-      setError('Заполните все поля')
-      return
+      setError('Заполните все поля');
+      return;
     }
 
     if (mode === 'register' && password !== confirmPassword) {
-      setError('Пароли не совпадают')
-      return
+      setError('Пароли не совпадают');
+      return;
     }
 
     try {
-      setSubmitting(true)
+      setSubmitting(true);
 
       if (mode === 'login') {
-        await login({ email: email.trim(), password })
+        await login({ email: email.trim(), password });
       } else {
-        await register({ email: email.trim(), password })
+        await register({ email: email.trim(), password });
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ошибка авторизации')
+      setError(err instanceof Error ? err.message : 'Ошибка авторизации');
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   const handleChangeEmail = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    const value = e.target.value.trim()
+    const value = e.target.value.trim();
 
-    setEmail(value)
+    setEmail(value);
 
     if (!value) {
-      setEmailError('Введите email')
+      setEmailError('Введите email');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      setEmailError('Некорректный email')
+      setEmailError('Некорректный email');
     } else {
-      setEmailError('')
+      setEmailError('');
     }
-  }
+  };
 
   const handleChangePassword = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    const value = e.target.value
+    const value = e.target.value;
 
-    setPassword(value)
+    setPassword(value);
 
     if (!value) {
-      setPasswordError('Введите пароль')
-      return
+      setPasswordError('Введите пароль');
+      return;
     }
 
     if (value.length < 8) {
-      setPasswordError('Минимум 8 символов')
-      return
+      setPasswordError('Минимум 8 символов');
+      return;
     }
 
     if (value.length > 28) {
-      setPasswordError('Максимум 28 символов')
-      return
+      setPasswordError('Максимум 28 символов');
+      return;
     }
 
     if (!/[a-z]/.test(value)) {
-      setPasswordError('Добавьте строчную букву')
-      return
+      setPasswordError('Добавьте строчную букву');
+      return;
     }
 
     if (!/[A-Z]/.test(value)) {
-      setPasswordError('Добавьте заглавную букву')
-      return
+      setPasswordError('Добавьте заглавную букву');
+      return;
     }
 
     if (!/\d/.test(value)) {
-      setPasswordError('Добавьте цифру')
-      return
+      setPasswordError('Добавьте цифру');
+      return;
     }
 
     if (!/[^A-Za-z\d]/.test(value)) {
-      setPasswordError('Добавьте специальный символ')
-      return
+      setPasswordError('Добавьте специальный символ');
+      return;
     }
 
-    setPasswordError('')
-  }
+    setPasswordError('');
+  };
 
   return (
     <Box className={styles.root}>
@@ -141,8 +141,8 @@ export function AuthPage() {
         <Tabs
           value={mode}
           onChange={(_event, value: AuthMode) => {
-            setMode(value)
-            setError(null)
+            setMode(value);
+            setError(null);
           }}
           variant="fullWidth"
           className={styles.tabs}
@@ -154,7 +154,9 @@ export function AuthPage() {
         <Box
           component="form"
           onSubmit={(event) => void handleSubmit(event)}
-          className={cn(styles.form, { [styles.formWithError]: Boolean(error) })}
+          className={cn(styles.form, {
+            [styles.formWithError]: Boolean(error),
+          })}
         >
           {error && <Alert severity="error">{error}</Alert>}
 
@@ -172,10 +174,12 @@ export function AuthPage() {
 
           <TextField
             label="Пароль"
-            type={showPassword ? "text" : "password"}
+            type={showPassword ? 'text' : 'password'}
             value={password}
             onChange={handleChangePassword}
-            autoComplete={mode === "login" ? "current-password" : "new-password"}
+            autoComplete={
+              mode === 'login' ? 'current-password' : 'new-password'
+            }
             fullWidth
             required
             error={!!passwordError}
@@ -188,11 +192,16 @@ export function AuthPage() {
               },
               input: {
                 endAdornment: (
-                  <InputAdornment position="end" className={cn(styles.toggleVisability)}>
+                  <InputAdornment
+                    position="end"
+                    className={cn(styles.toggleVisability)}
+                  >
                     <IconButton
                       edge="end"
                       onClick={() => setShowPassword((prev) => !prev)}
-                      aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
+                      aria-label={
+                        showPassword ? 'Скрыть пароль' : 'Показать пароль'
+                      }
                     >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
@@ -213,7 +222,7 @@ export function AuthPage() {
               required
             />
           )}
-
+          {/* <StoneCheckbox count={3} /> */}
           <Button
             type="submit"
             variant="contained"
@@ -227,5 +236,5 @@ export function AuthPage() {
         </Box>
       </Paper>
     </Box>
-  )
+  );
 }
