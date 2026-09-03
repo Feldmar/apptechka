@@ -1,22 +1,23 @@
-import { useCallback, useEffect, useState } from 'react'
-import { api } from '../api/client'
-import type { Medication, MedicationFormData } from '../types'
-import { normalizeTime } from '../utils/time'
+import { useCallback, useEffect, useState, useRef } from 'react';
+import { api } from '../api/client';
+import type { Medication, MedicationFormData } from '../types';
+import { normalizeTime } from '../utils/time';
 import {
   markNotified,
   shouldNotify,
   showMedicationNotification,
-} from '../utils/notifications'
+} from '../utils/notifications';
 
 export function useReminders() {
-  const [medications, setMedications] = useState<Medication[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [medications, setMedications] = useState<Medication[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const isInitialMount = useRef(true);
 
   const loadMedications = useCallback(async () => {
     try {
-      setError(null)
-      const data = await api.getMedications()
+      setError(null);
+      const data = await api.getMedications();
       setMedications(
         data.map((medication) => ({
           ...medication,
@@ -24,25 +25,29 @@ export function useReminders() {
         })),
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Не удалось загрузить препараты')
+      setError(
+        err instanceof Error ? err.message : 'Не удалось загрузить препараты',
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    void loadMedications()
-  }, [loadMedications])
+    // Only run on mount, not on updates
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      void loadMedications();
+    }
+  }, [loadMedications]);
 
   const addMedication = useCallback(async (data: MedicationFormData) => {
     const created = await api.createMedication({
-  name: data.name.trim(),
-  dosage: data.dosage.trim(),
-  times: data.hasReminder
-    ? data.times.map(normalizeTime)
-    : [],
-  hasReminder: data.hasReminder,
-})
+      name: data.name.trim(),
+      dosage: data.dosage.trim(),
+      times: data.hasReminder ? data.times.map(normalizeTime) : [],
+      hasReminder: data.hasReminder,
+    });
 
     setMedications((prev) =>
       [...prev, created].sort((a, b) => {
@@ -60,41 +65,49 @@ export function useReminders() {
         return a.name.localeCompare(b.name);
       }),
     );
-  }, [])
+  }, []);
 
   const removeMedication = useCallback(async (id: string) => {
-    await api.deleteMedication(id)
-    setMedications((prev) => prev.filter((medication) => medication.id !== id))
-  }, [])
+    await api.deleteMedication(id);
+    setMedications((prev) => prev.filter((medication) => medication.id !== id));
+  }, []);
 
   const logIntake = useCallback(async (medicationId: string, note?: string) => {
-    await api.createIntake({ medicationId, note })
-  }, [])
+    await api.createIntake({ medicationId, note });
+  }, []);
 
   const checkReminders = useCallback(() => {
     setMedications((prev) => {
-      const due = prev.filter((medication) => shouldNotify(medication))
+      const due = prev.filter((medication) => shouldNotify(medication));
 
       if (due.length === 0) {
-        return prev
+        return prev;
       }
 
       due.forEach((medication) => {
-        showMedicationNotification(medication)
-        void api.markMedicationNotified(medication.id, markNotified(medication).lastNotifiedDate!)
-      })
+        showMedicationNotification(medication);
+        void api.markMedicationNotified(
+          medication.id,
+          markNotified(medication).lastNotifiedDate!,
+        );
+      });
 
       return prev.map((medication) =>
         shouldNotify(medication) ? markNotified(medication) : medication,
-      )
-    })
-  }, [])
+      );
+    });
+  }, []);
 
   useEffect(() => {
-    checkReminders()
-    const interval = setInterval(checkReminders, 15_000)
-    return () => clearInterval(interval)
-  }, [checkReminders])
+    // Only run on mount for initial check
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      checkReminders();
+    }
+    
+    const interval = setInterval(checkReminders, 15_000);
+    return () => clearInterval(interval);
+  }, [checkReminders]);
 
   return {
     medications,
@@ -104,5 +117,5 @@ export function useReminders() {
     removeMedication,
     logIntake,
     reload: loadMedications,
-  }
+  };
 }

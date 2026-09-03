@@ -4,13 +4,14 @@ export interface User {
 }
 
 export interface AuthResponse {
-  token: string
-  user: User
+  token: string;
+  user: User;
 }
 
 export interface LoginData {
-  email: string
-  password: string
+  email: string;
+  password: string;
+  rememberMe?: boolean;
 }
 
 export interface RegisterData {

@@ -1,0 +1,7 @@
+@use 'variables' as *;
+
+@mixin arimo-text {
+  font-size: 13px;
+  font-family: $font-arimo;
+     color: $color-text-arimo;
+}

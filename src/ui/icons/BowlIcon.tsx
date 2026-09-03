@@ -23,13 +23,7 @@ export const BowlIcon = () => (
     />
 
     {/* Верхний край */}
-    <ellipse
-      cx="37.5"
-      cy="18.5"
-      rx="29"
-      ry="11.5"
-      fill="#1C5939"
-    />
+    <ellipse cx="37.5" cy="18.5" rx="29" ry="11.5" fill="#1C5939" />
 
     {/* Внутренность чаши */}
     <ellipse

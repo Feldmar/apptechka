@@ -1,33 +1,34 @@
-import cn from 'classnames'
-import { Alert, Button, Typography } from '@mui/material'
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive'
-import NotificationsOffIcon from '@mui/icons-material/NotificationsOff'
-import styles from './NotificationBanner.module.scss'
+import cn from 'classnames';
+import { Alert, Button, Typography } from '@mui/material';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
+import styles from './NotificationBanner.module.scss';
 
 interface NotificationBannerProps {
-  isSupported: boolean
-  isGranted: boolean
-  permission: NotificationPermission
-  onRequestPermission: () => void
+  isSupported: boolean;
+  isGranted: boolean;
+  permission: NotificationPermission;
+  onRequestPermission: () => void;
 }
 
-type BannerSeverity = 'warning' | 'success' | 'error' | 'info'
+type BannerSeverity = 'warning' | 'success' | 'error' | 'info';
 
 function getBannerState({
   isSupported,
   isGranted,
   permission,
 }: Pick<NotificationBannerProps, 'isSupported' | 'isGranted' | 'permission'>): {
-  severity: BannerSeverity
-  message: string
-  showAction: boolean
+  severity: BannerSeverity;
+  message: string;
+  showAction: boolean;
 } {
   if (!isSupported) {
     return {
       severity: 'warning',
-      message: 'Ваш браузер не поддерживает уведомления. Напоминания работать не будут.',
+      message:
+        'Ваш браузер не поддерживает уведомления. Напоминания работать не будут.',
       showAction: false,
-    }
+    };
   }
 
   if (isGranted) {
@@ -36,7 +37,7 @@ function getBannerState({
       message:
         'Уведомления включены. Напоминания придут в указанное время, даже если вкладка свёрнута.',
       showAction: false,
-    }
+    };
   }
 
   if (permission === 'denied') {
@@ -45,14 +46,14 @@ function getBannerState({
       message:
         'Уведомления заблокированы в настройках браузера. Разрешите их для этого сайта, чтобы получать напоминания.',
       showAction: false,
-    }
+    };
   }
 
   return {
     severity: 'info',
     message: '',
     showAction: true,
-  }
+  };
 }
 
 export function NotificationBanner({
@@ -65,14 +66,14 @@ export function NotificationBanner({
     isSupported,
     isGranted,
     permission,
-  })
+  });
 
   const icon =
     severity === 'warning' || severity === 'error' ? (
       <NotificationsOffIcon />
     ) : (
       <NotificationsActiveIcon />
-    )
+    );
 
   return (
     <Alert
@@ -93,12 +94,13 @@ export function NotificationBanner({
             Разрешите уведомления
           </Typography>
           <Typography variant="body2" className={styles.description}>
-            Без этого приложение не сможет напомнить о приёме лекарства в нужное время.
+            Без этого приложение не сможет напомнить о приёме лекарства в нужное
+            время.
           </Typography>
         </>
       ) : (
         message
       )}
     </Alert>
-  )
+  );
 }

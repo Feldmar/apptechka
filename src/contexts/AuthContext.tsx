@@ -1,70 +1,67 @@
 import {
-  createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
   type ReactNode,
-} from 'react'
+} from 'react';
 
-import { api, setUnauthorizedHandler } from '../api/client'
-import type { LoginData, RegisterData, User } from '../types'
+import { api, setUnauthorizedHandler } from '../api/client';
+import type { LoginData, RegisterData, User } from '../types';
+import { AuthContext } from './contexts';
 
-interface AuthContextValue {
-  user: User | null
-  loading: boolean
-  isAuthenticated: boolean
-  login: (data: LoginData) => Promise<void>
-  register: (data: RegisterData) => Promise<void>
-  logout: () => Promise<void>
+export interface AuthContextValue {
+  user: User | null;
+  loading: boolean;
+  isAuthenticated: boolean;
+  login: (data: LoginData) => Promise<void>;
+  register: (data: RegisterData) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextValue | null>(null)
-
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+      useEffect(() => {
     setUnauthorizedHandler(() => {
-      setUser(null)
-    })
+      setUser(null);
+    });
 
     return () => {
-      setUnauthorizedHandler(() => { })
-    }
-  }, [])
+      setUnauthorizedHandler(() => {});
+    };
+  }, []);
 
   useEffect(() => {
     void api
       .getMe()
       .then(setUser)
       .catch(() => {
-        setUser(null)
+        setUser(null);
       })
       .finally(() => {
-        setLoading(false)
-      })
-  }, [])
+        setLoading(false);
+      });
+  }, []);
 
   const login = useCallback(async (data: LoginData) => {
-    const response = await api.login(data)
-    setUser(response.user)
-  }, [])
+    const response = await api.login(data);
+    setUser(response.user);
+  }, []);
 
   const register = useCallback(async (data: RegisterData) => {
-    const response = await api.register(data)
-    setUser(response.user)
-  }, [])
+    const response = await api.register(data);
+    setUser(response.user);
+  }, []);
 
   const logout = useCallback(async () => {
     try {
-      await api.logout()
+      await api.logout();
     } finally {
-      setUser(null)
+      setUser(null);
     }
-  }, [])
+  }, []);
 
   const value = useMemo(
     () => ({
@@ -76,17 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       logout,
     }),
     [user, loading, login, register, logout],
-  )
+  );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
-
-export function useAuth(): AuthContextValue {
-  const context = useContext(AuthContext)
-
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider')
-  }
-
-  return context
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

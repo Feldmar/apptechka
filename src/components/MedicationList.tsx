@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from 'react';
 import {
   Box,
   Button,
@@ -8,45 +8,49 @@ import {
   ListItem,
   Paper,
   Typography,
-} from '@mui/material'
-import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined'
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
-import MedicationIcon from '@mui/icons-material/Medication'
-import AccessTimeIcon from '@mui/icons-material/AccessTime'
-import EmergencyIcon from '@mui/icons-material/Emergency'
-import type { Medication } from '../types'
-import { useCountdown } from '../hooks/useCountdown'
-import { formatTimeDisplay } from '../utils/time'
-import styles from './MedicationList.module.scss'
+} from '@mui/material';
+import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import MedicationIcon from '@mui/icons-material/Medication';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import EmergencyIcon from '@mui/icons-material/Emergency';
+import type { Medication } from '../types';
+import { useCountdown } from '../hooks/useCountdown';
+import { formatTimeDisplay } from '../utils/time';
+import styles from './MedicationList.module.scss';
 
 interface MedicationItemProps {
-  medication: Medication
-  onRemove: (id: string) => Promise<void>
-  onLogIntake: (id: string) => Promise<void>
+  medication: Medication;
+  onRemove: (id: string) => Promise<void>;
+  onLogIntake: (id: string) => Promise<void>;
 }
 
-function MedicationItem({ medication, onRemove, onLogIntake }: MedicationItemProps) {
-  const countdown = useCountdown(medication.times)
-  const [logging, setLogging] = useState(false)
-  const [removing, setRemoving] = useState(false)
+function MedicationItem({
+  medication,
+  onRemove,
+  onLogIntake,
+}: MedicationItemProps) {
+  const countdown = useCountdown(medication.times);
+  const [logging, setLogging] = useState(false);
+  const [removing, setRemoving] = useState(false);
 
   const handleLogIntake = async () => {
     try {
-      setLogging(true)
-      await onLogIntake(medication.id)
+      setLogging(true);
+      await onLogIntake(medication.id);
     } finally {
-      setLogging(false)
+      setLogging(false);
     }
-  }
+  };
 
   const handleRemove = async () => {
     try {
-      setRemoving(true)
-      await onRemove(medication.id)
+      setRemoving(true);
+      await onRemove(medication.id);
     } finally {
-      setRemoving(false)
+      setRemoving(false);
     }
-  }
+  };
 
   return (
     <Paper className={styles.card}>
@@ -107,15 +111,15 @@ function MedicationItem({ medication, onRemove, onLogIntake }: MedicationItemPro
         </div>
       </div>
     </Paper>
-  )
+  );
 }
 
 interface MedicationListProps {
-  medications: Medication[]
-  title: string
-  emptyText: string
-  onRemove: (id: string) => Promise<void>
-  onLogIntake: (id: string) => Promise<void>
+  medications: Medication[];
+  title: string;
+  emptyText: string;
+  onRemove: (id: string) => Promise<void>;
+  onLogIntake: (id: string) => Promise<void>;
 }
 
 export function MedicationList({
@@ -135,7 +139,11 @@ export function MedicationList({
       ) : (
         <List disablePadding className={styles.list}>
           {medications.map((medication) => (
-            <ListItem key={medication.id} disablePadding className={styles.item}>
+            <ListItem
+              key={medication.id}
+              disablePadding
+              className={styles.item}
+            >
               <MedicationItem
                 medication={medication}
                 onRemove={onRemove}
@@ -146,7 +154,7 @@ export function MedicationList({
         </List>
       )}
     </BoxSection>
-  )
+  );
 }
 
 function BoxSection({
@@ -154,9 +162,9 @@ function BoxSection({
   count,
   children,
 }: {
-  title: string
-  count: number
-  children: React.ReactNode
+  title: string;
+  count: number;
+  children: React.ReactNode;
 }) {
   return (
     <div className={styles.section}>
@@ -170,5 +178,5 @@ function BoxSection({
       </Typography>
       {children}
     </div>
-  )
+  );
 }

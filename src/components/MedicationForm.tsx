@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import cn from 'classnames'
+import { useState } from 'react';
+import cn from 'classnames';
 import {
   Alert,
   Box,
@@ -7,14 +7,14 @@ import {
   FormControlLabel,
   Switch,
   TextField,
-} from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import type { MedicationFormData } from '../types'
-import { TimeInput24 } from './TimeInput24'
-import styles from './MedicationForm.module.scss'
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import type { MedicationFormData } from '../types';
+import { TimeInput24 } from './TimeInput24';
+import styles from './MedicationForm.module.scss';
 
 interface MedicationFormProps {
-  onAdd: (data: MedicationFormData) => Promise<void>
+  onAdd: (data: MedicationFormData) => Promise<void>;
 }
 
 const initialForm: MedicationFormData = {
@@ -23,49 +23,48 @@ const initialForm: MedicationFormData = {
   multiplicity: 1,
   times: ['09:00'],
   hasReminder: true,
-}
+};
 
 export function MedicationForm({ onAdd }: MedicationFormProps) {
-  const [form, setForm] = useState<MedicationFormData>(initialForm)
-  const [error, setError] = useState<string | null>(null)
-  const [submitting, setSubmitting] = useState(false)
+  const [form, setForm] = useState<MedicationFormData>(initialForm);
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault()
-    setError(null)
+    event.preventDefault();
+    setError(null);
 
     if (!form.name.trim()) {
-      setError('Введите название препарата')
-      return
+      setError('Введите название препарата');
+      return;
     }
 
     if (!form.dosage.trim()) {
-      setError('Введите дозировку')
-      return
+      setError('Введите дозировку');
+      return;
     }
 
-    if (
-      form.hasReminder &&
-      form.times.some((time) => !time)
-    ) {
-      setError('Укажите время каждого приема')
-      return
+    if (form.hasReminder && form.times.some((time) => !time)) {
+      setError('Укажите время каждого приема');
+      return;
     }
 
     try {
-      setSubmitting(true)
-      await onAdd(form)
+      setSubmitting(true);
+      await onAdd(form);
       setForm({
         ...initialForm,
         times: form.times,
         hasReminder: form.hasReminder,
-      })
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Не удалось добавить препарат')
+      setError(
+        err instanceof Error ? err.message : 'Не удалось добавить препарат',
+      );
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   return (
     <Box
@@ -92,21 +91,22 @@ export function MedicationForm({ onAdd }: MedicationFormProps) {
         fullWidth
         required
       />
-      
+
       <TextField
         label="Кратность приема"
         type="number"
         value={form.multiplicity}
         onChange={(e) => {
-          const multiplicity = Math.max(1, Number(e.target.value))
+          const multiplicity = Math.max(1, Number(e.target.value));
 
           setForm((prev) => ({
             ...prev,
             multiplicity,
-            times: Array.from({ length: multiplicity }, (_, index) =>
-              prev.times[index] ?? '09:00'
+            times: Array.from(
+              { length: multiplicity },
+              (_, index) => prev.times[index] ?? '09:00',
             ),
-          }))
+          }));
         }}
         fullWidth
         required
@@ -130,13 +130,13 @@ export function MedicationForm({ onAdd }: MedicationFormProps) {
             key={index}
             value={time}
             onChange={(newTime) => {
-              const times = [...form.times]
-              times[index] = newTime
+              const times = [...form.times];
+              times[index] = newTime;
 
               setForm({
                 ...form,
                 times,
-              })
+              });
             }}
           />
         ))}
@@ -152,5 +152,5 @@ export function MedicationForm({ onAdd }: MedicationFormProps) {
         {form.hasReminder ? 'Добавить напоминание' : 'Добавить препарат'}
       </Button>
     </Box>
-  )
+  );
 }

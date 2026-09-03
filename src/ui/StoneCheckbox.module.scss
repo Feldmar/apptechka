@@ -1,3 +1,6 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
 .container {
   position: relative;
   display: flex;
@@ -8,8 +11,8 @@
 
 .pile {
   position: relative;
-  width: 70px;
-  height: 55px;
+  width: 35px;
+  height: 40px;
   flex-shrink: 0;
 }
 
@@ -56,10 +59,13 @@
 }
 
 .check {
-  position: absolute;
-  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
+  height: auto;
+  width: auto;
+}
+.text {
+  @include arimo-text;
 }

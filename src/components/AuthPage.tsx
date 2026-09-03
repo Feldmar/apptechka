@@ -15,10 +15,11 @@ import {
 import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
 import LoginIcon from '@mui/icons-material/Login';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { useAuth } from '../contexts/AuthContext';
+
 import styles from './AuthPage.module.scss';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { StoneCheckbox } from '../ui/StoneCheckbox';
+import { useAuth } from '../hooks/useAuth';
 
 type AuthMode = 'login' | 'register';
 
@@ -33,6 +34,7 @@ export function AuthPage() {
   const [submitting, setSubmitting] = useState(false);
   const [passwordError, setPasswordError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -52,7 +54,7 @@ export function AuthPage() {
       setSubmitting(true);
 
       if (mode === 'login') {
-        await login({ email: email.trim(), password });
+        await login({ email: email.trim(), password, rememberMe: rememberMe });
       } else {
         await register({ email: email.trim(), password });
       }
@@ -222,7 +224,15 @@ export function AuthPage() {
               required
             />
           )}
-          {/* <StoneCheckbox count={3} /> */}
+
+          {mode === 'login' && (
+            <StoneCheckbox
+              count={5}
+              text={'Запомнить меня'}
+              onChange={setRememberMe}
+            />
+          )}
+
           <Button
             type="submit"
             variant="contained"

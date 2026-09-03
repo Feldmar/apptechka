@@ -1,18 +1,18 @@
 export interface Medication {
-  id: string
-  name: string
-  dosage: string
+  id: string;
+  name: string;
+  dosage: string;
   times: string[];
-  hasReminder: boolean
-  lastNotifiedDate: string | null
-  createdAt: string
+  hasReminder: boolean;
+  lastNotifiedDate: string | null;
+  createdAt: string;
 }
 
 export interface CreateMedicationData {
-  name: string
-  dosage: string
-  times: string[]
-  hasReminder: boolean
+  name: string;
+  dosage: string;
+  times: string[];
+  hasReminder: boolean;
 }
 
 export interface MedicationFormData {
@@ -24,19 +24,19 @@ export interface MedicationFormData {
 }
 
 export interface Intake {
-  id: string
-  medicationId: string
-  medicationName: string
-  dosage: string
-  hasReminder: boolean
-  takenAt: string
-  note: string | null
+  id: string;
+  medicationId: string;
+  medicationName: string;
+  dosage: string;
+  hasReminder: boolean;
+  takenAt: string;
+  note: string | null;
 }
 
 export interface CreateIntakeData {
-  medicationId: string
-  takenAt?: string
-  note?: string | null
+  medicationId: string;
+  takenAt?: string;
+  note?: string | null;
 }
 
-export type { User, AuthResponse, LoginData, RegisterData } from './types/auth'
+export type { User, AuthResponse, LoginData, RegisterData } from './types/auth';

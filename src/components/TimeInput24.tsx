@@ -5,30 +5,38 @@ import {
   Select,
   Stack,
   Typography,
-} from '@mui/material'
-import type { SelectChangeEvent } from '@mui/material'
-import { buildTime, parseTime } from '../utils/time'
-import styles from './TimeInput24.module.scss'
+} from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
+import { buildTime, parseTime } from '../utils/time';
+import styles from './TimeInput24.module.scss';
 
-const HOURS = Array.from({ length: 24 }, (_, index) => String(index).padStart(2, '0'))
-const MINUTES = Array.from({ length: 60 }, (_, index) => String(index).padStart(2, '0'))
+const HOURS = Array.from({ length: 24 }, (_, index) =>
+  String(index).padStart(2, '0'),
+);
+const MINUTES = Array.from({ length: 60 }, (_, index) =>
+  String(index).padStart(2, '0'),
+);
 
 interface TimeInput24Props {
-  value: string
-  onChange: (value: string) => void
-  label?: string
+  value: string;
+  onChange: (value: string) => void;
+  label?: string;
 }
 
-export function TimeInput24({ value, onChange, label = 'Время приёма' }: TimeInput24Props) {
-  const { hours, minutes } = parseTime(value)
+export function TimeInput24({
+  value,
+  onChange,
+  label = 'Время приёма',
+}: TimeInput24Props) {
+  const { hours, minutes } = parseTime(value);
 
   const handleHoursChange = (event: SelectChangeEvent) => {
-    onChange(buildTime(event.target.value, minutes))
-  }
+    onChange(buildTime(event.target.value, minutes));
+  };
 
   const handleMinutesChange = (event: SelectChangeEvent) => {
-    onChange(buildTime(hours, event.target.value))
-  }
+    onChange(buildTime(hours, event.target.value));
+  };
 
   return (
     <div className={styles.root}>
@@ -74,5 +82,5 @@ export function TimeInput24({ value, onChange, label = 'Время приёма'
         </FormControl>
       </Stack>
     </div>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react';
 import {
   Alert,
   AppBar,
@@ -11,25 +11,26 @@ import {
   Tabs,
   Toolbar,
   Typography,
-} from '@mui/material'
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
-import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy'
-import LogoutIcon from '@mui/icons-material/Logout'
-import MedicationIcon from '@mui/icons-material/Medication'
-import { CalendarView } from './components/CalendarView'
-import { MedicationForm } from './components/MedicationForm'
-import { MedicationList } from './components/MedicationList'
-import { NotificationBanner } from './components/NotificationBanner'
-import { useAuth } from './contexts/AuthContext'
-import { useNotificationPermission } from './hooks/useNotificationPermission'
-import { useReminders } from './hooks/useReminders'
-import styles from './App.module.scss'
+} from '@mui/material';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
+import LogoutIcon from '@mui/icons-material/Logout';
+import MedicationIcon from '@mui/icons-material/Medication';
+import { CalendarView } from './components/CalendarView';
+import { MedicationForm } from './components/MedicationForm';
+import { MedicationList } from './components/MedicationList';
+import { NotificationBanner } from './components/NotificationBanner';
 
-type TabKey = 'medications' | 'calendar'
+import { useNotificationPermission } from './hooks/useNotificationPermission';
+import { useReminders } from './hooks/useReminders';
+import styles from './App.module.scss';
+import { useAuth } from './hooks/useAuth';
+
+type TabKey = 'medications' | 'calendar';
 
 export default function App() {
-  const { user, logout } = useAuth()
-  const [tab, setTab] = useState<TabKey>('medications')
+  const { user, logout } = useAuth();
+  const [tab, setTab] = useState<TabKey>('medications');
   const {
     medications,
     loading,
@@ -37,27 +38,27 @@ export default function App() {
     addMedication,
     removeMedication,
     logIntake,
-  } = useReminders()
+  } = useReminders();
   const { permission, requestPermission, isSupported, isGranted } =
-    useNotificationPermission()
+    useNotificationPermission();
 
   const scheduledMedications = useMemo(
     () => medications.filter((medication) => medication.hasReminder),
     [medications],
-  )
+  );
 
   const asNeededMedications = useMemo(
     () => medications.filter((medication) => !medication.hasReminder),
     [medications],
-  )
+  );
 
   const handleAdd = async (data: Parameters<typeof addMedication>[0]) => {
     if (data.hasReminder && !isGranted) {
-      void requestPermission()
+      void requestPermission();
     }
 
-    await addMedication(data)
-  }
+    await addMedication(data);
+  };
 
   return (
     <Box className={styles.root}>
@@ -158,5 +159,5 @@ export default function App() {
         {tab === 'calendar' && <CalendarView />}
       </Container>
     </Box>
-  )
+  );
 }

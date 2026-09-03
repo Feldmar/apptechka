@@ -1,63 +1,67 @@
-import { useMemo, useState } from 'react'
-import cn from 'classnames'
-import dayjs from 'dayjs'
-import 'dayjs/locale/ru'
-import isoWeek from 'dayjs/plugin/isoWeek'
+import { useMemo, useState } from 'react';
+import cn from 'classnames';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ru';
+import isoWeek from 'dayjs/plugin/isoWeek';
 import {
   Alert,
   CircularProgress,
   IconButton,
   Paper,
   Typography,
-} from '@mui/material'
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
-import { useIntakes } from '../hooks/useIntakes'
-import type { Intake } from '../types'
-import { formatDate, formatDateTime, formatMonthTitle } from '../utils/time'
-import styles from './CalendarView.module.scss'
+} from '@mui/material';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import { useIntakes } from '../hooks/useIntakes';
+import type { Intake } from '../types';
+import { formatDate, formatDateTime, formatMonthTitle } from '../utils/time';
+import styles from './CalendarView.module.scss';
 
-dayjs.extend(isoWeek)
-dayjs.locale('ru')
+dayjs.extend(isoWeek);
+dayjs.locale('ru');
 
-const WEEKDAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+const WEEKDAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
 export function CalendarView() {
-  const [currentMonth, setCurrentMonth] = useState(() => dayjs().startOf('month'))
-  const [selectedDate, setSelectedDate] = useState(() => dayjs().format('YYYY-MM-DD'))
+  const [currentMonth, setCurrentMonth] = useState(() =>
+    dayjs().startOf('month'),
+  );
+  const [selectedDate, setSelectedDate] = useState(() =>
+    dayjs().format('YYYY-MM-DD'),
+  );
 
-  const from = currentMonth.startOf('month').format('YYYY-MM-DD')
-  const to = currentMonth.endOf('month').format('YYYY-MM-DD')
-  const { intakes, loading, error, removeIntake } = useIntakes(from, to)
+  const from = currentMonth.startOf('month').format('YYYY-MM-DD');
+  const to = currentMonth.endOf('month').format('YYYY-MM-DD');
+  const { intakes, loading, error, removeIntake } = useIntakes(from, to);
 
   const intakesByDate = useMemo(() => {
-    const map = new Map<string, Intake[]>()
+    const map = new Map<string, Intake[]>();
 
     intakes.forEach((intake) => {
-      const date = dayjs(intake.takenAt).format('YYYY-MM-DD')
-      const existing = map.get(date) ?? []
-      map.set(date, [...existing, intake])
-    })
+      const date = dayjs(intake.takenAt).format('YYYY-MM-DD');
+      const existing = map.get(date) ?? [];
+      map.set(date, [...existing, intake]);
+    });
 
-    return map
-  }, [intakes])
+    return map;
+  }, [intakes]);
 
   const calendarDays = useMemo(() => {
-    const start = currentMonth.startOf('month').startOf('isoWeek')
-    const end = currentMonth.endOf('month').endOf('isoWeek')
-    const days: dayjs.Dayjs[] = []
-    let day = start
+    const start = currentMonth.startOf('month').startOf('isoWeek');
+    const end = currentMonth.endOf('month').endOf('isoWeek');
+    const days: dayjs.Dayjs[] = [];
+    let day = start;
 
     while (day.isBefore(end) || day.isSame(end, 'day')) {
-      days.push(day)
-      day = day.add(1, 'day')
+      days.push(day);
+      day = day.add(1, 'day');
     }
 
-    return days
-  }, [currentMonth])
+    return days;
+  }, [currentMonth]);
 
-  const selectedIntakes = intakesByDate.get(selectedDate) ?? []
+  const selectedIntakes = intakesByDate.get(selectedDate) ?? [];
 
   return (
     <div className={styles.root}>
@@ -65,7 +69,9 @@ export function CalendarView() {
         <div className={styles.header}>
           <IconButton
             aria-label="Предыдущий месяц"
-            onClick={() => setCurrentMonth((month) => month.subtract(1, 'month'))}
+            onClick={() =>
+              setCurrentMonth((month) => month.subtract(1, 'month'))
+            }
           >
             <ChevronLeftIcon />
           </IconButton>
@@ -97,11 +103,11 @@ export function CalendarView() {
         ) : (
           <div className={styles.grid}>
             {calendarDays.map((day) => {
-              const dateKey = day.format('YYYY-MM-DD')
-              const dayIntakes = intakesByDate.get(dateKey) ?? []
-              const isCurrentMonth = day.month() === currentMonth.month()
-              const isSelected = dateKey === selectedDate
-              const isToday = day.isSame(dayjs(), 'day')
+              const dateKey = day.format('YYYY-MM-DD');
+              const dayIntakes = intakesByDate.get(dateKey) ?? [];
+              const isCurrentMonth = day.month() === currentMonth.month();
+              const isSelected = dateKey === selectedDate;
+              const isToday = day.isSame(dayjs(), 'day');
 
               return (
                 <button
@@ -120,7 +126,7 @@ export function CalendarView() {
                     <span className={styles.dot}>{dayIntakes.length}</span>
                   )}
                 </button>
-              )
+              );
             })}
           </div>
         )}
@@ -170,5 +176,5 @@ export function CalendarView() {
         )}
       </Paper>
     </div>
-  )
+  );
 }
