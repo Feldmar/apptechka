@@ -67,8 +67,8 @@ export default function App() {
           <div className={styles.toolbarStart}>
             <LocalPharmacyIcon className={styles.headerIcon} />
             <div>
-              <Typography variant="h6" component="h1" className={styles.title}>
-                Аптечка
+                   <Typography variant="h6" component="h1" className={styles.title}>
+                Аптечка 💊
               </Typography>
               <Typography variant="caption" className={styles.email}>
                 {user?.email}
