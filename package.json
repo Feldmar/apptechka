@@ -4,11 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
-    "dev:client": "vite",
-    "dev:server": "npm run dev --prefix server",
+    "dev": "vite",
     "build": "tsc && vite build",
-    "build:server": "npm run build --prefix server",
     "preview": "vite preview",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
