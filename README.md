@@ -157,7 +157,7 @@ npm run dev
 После запуска frontend будет доступен по адресу:
 
 http://localhost:5173
-https://frabjous-cactus-c648de.netlify.app/ - демо
+https://apptechka.netlify.app - демо
 
 🗄️ База данных
 
