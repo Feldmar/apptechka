@@ -1,0 +1,25 @@
+@use '../styles/variables' as *;
+
+.icon {
+  background-color: $color-primary !important;
+
+  &:hover {
+    background: radial-gradient(
+      circle,
+      rgb(24, 83, 68) 50%,
+      rgb(21, 135, 68) 77%,
+      rgb(14, 191, 135) 100%
+    ) !important;
+  }
+
+  & svg {
+    color: white;
+  }
+}
+
+.container {
+  width: min-content;
+  position: absolute;
+  right: 30px;
+  top: 100px;
+}

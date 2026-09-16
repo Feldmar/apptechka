@@ -8,6 +8,7 @@ import { setUnauthorizedHandler } from './api/client';
 import { theme } from './theme';
 import './styles/global.scss';
 import { useAuth } from './hooks/useAuth';
+import styles from './App.module.scss';
 
 export function AppGate() {
   const { user, loading, logout } = useAuth();
@@ -18,9 +19,7 @@ export function AppGate() {
 
   if (loading) {
     return (
-      <div
-        style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}
-      >
+      <div className={styles.progress}>
         <CircularProgress />
       </div>
     );

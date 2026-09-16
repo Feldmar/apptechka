@@ -25,6 +25,7 @@ import { useNotificationPermission } from './hooks/useNotificationPermission';
 import { useReminders } from './hooks/useReminders';
 import styles from './App.module.scss';
 import { useAuth } from './hooks/useAuth';
+import AddButton from './components/AddButton';
 
 type TabKey = 'medications' | 'calendar';
 
@@ -156,7 +157,12 @@ export default function App() {
           </div>
         )}
 
-        {tab === 'calendar' && <CalendarView />}
+        {tab === 'calendar' && (
+          <>
+            <CalendarView />
+            <AddButton />
+          </>
+        )}
       </Container>
     </Box>
   );
