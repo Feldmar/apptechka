@@ -18,8 +18,8 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 import styles from './AuthPage.module.scss';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { StoneCheckbox } from '../ui/StoneCheckbox';
-import { useAuth } from '../hooks/useAuth';
+import { StoneCheckbox } from '../../ui/StoneCheckbox';
+import { useAuth } from '../../hooks/useAuth';
 
 type AuthMode = 'login' | 'register';
 

@@ -16,16 +16,17 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MedicationIcon from '@mui/icons-material/Medication';
-import { CalendarView } from './components/CalendarView';
-import { MedicationForm } from './components/MedicationForm';
-import { MedicationList } from './components/MedicationList';
-import { NotificationBanner } from './components/NotificationBanner';
+import { CalendarView } from './components/CalendarView/CalendarView';
+
+import { NotificationBanner } from './components/UI/NotificationBanner/NotificationBanner';
 
 import { useNotificationPermission } from './hooks/useNotificationPermission';
 import { useReminders } from './hooks/useReminders';
 import styles from './App.module.scss';
 import { useAuth } from './hooks/useAuth';
-import AddButton from './components/AddButton';
+import AddButton from './components/UI/AddButton/AddButton';
+import { MedicationForm } from './components/MedicationForm/MedicationForm';
+import { MedicationList } from './components/MedicationList/MedicationList';
 
 type TabKey = 'medications' | 'calendar';
 

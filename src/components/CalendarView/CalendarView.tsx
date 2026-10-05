@@ -13,9 +13,9 @@ import {
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import { useIntakes } from '../hooks/useIntakes';
-import type { Intake } from '../types';
-import { formatDate, formatDateTime, formatMonthTitle } from '../utils/time';
+import { useIntakes } from '../../hooks/useIntakes';
+import type { Intake } from '../../types';
+import { formatDate, formatDateTime, formatMonthTitle } from '../../utils/time';
 import styles from './CalendarView.module.scss';
 
 dayjs.extend(isoWeek);

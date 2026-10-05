@@ -15,17 +15,65 @@ type UnauthorizedHandler = () => void;
 
 let onUnauthorized: UnauthorizedHandler | null = null;
 
+let csrfToken: string | null = null;
+let csrfTokenPromise: Promise<string> | null = null;
+
+const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
+
 export function setUnauthorizedHandler(handler: UnauthorizedHandler): void {
   onUnauthorized = handler;
 }
+
+async function getCsrfToken(): Promise<string> {
+  if (csrfToken) {
+    return csrfToken;
+  }
+
+  if (csrfTokenPromise) {
+    return csrfTokenPromise;
+  }
+
+  csrfTokenPromise = fetch(`${API_BASE}/auth/csrf`, {
+    method: 'GET',
+    credentials: 'include',
+  })
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error('Не удалось получить CSRF token');
+      }
+
+      const data = (await response.json()) as {
+        csrfToken: string;
+      };
+
+      csrfToken = data.csrfToken;
+
+      return csrfToken;
+    })
+    .finally(() => {
+      csrfTokenPromise = null;
+    });
+
+  return csrfTokenPromise;
+}
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const method = options?.method?.toUpperCase() ?? 'GET';
+
+  const headers = new Headers(options?.headers);
+
+  headers.set('Content-Type', 'application/json');
+
+  if (!SAFE_METHODS.has(method)) {
+    const token = await getCsrfToken();
+
+    headers.set('X-CSRF-Token', token);
+  }
+
   const response = await fetch(`${API_BASE}${path}`, {
     ...options,
     credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options?.headers as Record<string, string> | undefined),
-    },
+    headers,
   });
 
   if (response.status === 401) {
@@ -36,10 +84,13 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     let message = 'Ошибка запроса';
 
     try {
-      const data = await response.json();
+      const data = (await response.json()) as {
+        error?: string;
+      };
+
       message = data.error ?? message;
     } catch {
-      console.error("Ошибка ошибки")
+      console.error('Ошибка обработки ответа');
     }
 
     throw new Error(message);
@@ -49,7 +100,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     return undefined as T;
   }
 
-  return response.json();
+  return response.json() as Promise<T>;
 }
 
 export const api = {
@@ -64,6 +115,7 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
+
   logout: () =>
     request<void>('/auth/logout', {
       method: 'POST',
@@ -80,7 +132,9 @@ export const api = {
     }),
 
   deleteMedication: (id: string) =>
-    request<void>(`/medications/${id}`, { method: 'DELETE' }),
+    request<void>(`/medications/${id}`, {
+      method: 'DELETE',
+    }),
 
   markMedicationNotified: (id: string, date: string) =>
     request<Medication>(`/medications/${id}/notified`, {
@@ -90,9 +144,17 @@ export const api = {
 
   getIntakes: (from?: string, to?: string) => {
     const params = new URLSearchParams();
-    if (from) params.set('from', from);
-    if (to) params.set('to', to);
+
+    if (from) {
+      params.set('from', from);
+    }
+
+    if (to) {
+      params.set('to', to);
+    }
+
     const query = params.toString();
+
     return request<Intake[]>(`/intakes${query ? `?${query}` : ''}`);
   },
 
@@ -103,5 +165,7 @@ export const api = {
     }),
 
   deleteIntake: (id: string) =>
-    request<void>(`/intakes/${id}`, { method: 'DELETE' }),
+    request<void>(`/intakes/${id}`, {
+      method: 'DELETE',
+    }),
 };

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { CircularProgress, CssBaseline, ThemeProvider } from '@mui/material';
 import App from './App';
-import { AuthPage } from './components/AuthPage';
+import { AuthPage } from './components/AuthPage/AuthPage';
 import { AuthProvider } from './contexts/AuthContext';
 import { setUnauthorizedHandler } from './api/client';
 import { theme } from './theme';

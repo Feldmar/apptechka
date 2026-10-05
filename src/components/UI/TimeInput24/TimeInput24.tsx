@@ -7,8 +7,9 @@ import {
   Typography,
 } from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material';
-import { buildTime, parseTime } from '../utils/time';
+
 import styles from './TimeInput24.module.scss';
+import { parseTime, buildTime } from '../../../utils/time';
 
 const HOURS = Array.from({ length: 24 }, (_, index) =>
   String(index).padStart(2, '0'),

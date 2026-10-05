@@ -9,9 +9,10 @@ import {
   TextField,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import type { MedicationFormData } from '../types';
-import { TimeInput24 } from './TimeInput24';
+
 import styles from './MedicationForm.module.scss';
+import type { MedicationFormData } from '../../types';
+import { TimeInput24 } from '../UI/TimeInput24/TimeInput24';
 
 interface MedicationFormProps {
   onAdd: (data: MedicationFormData) => Promise<void>;
