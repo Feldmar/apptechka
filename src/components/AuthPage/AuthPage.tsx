@@ -18,7 +18,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 import styles from './AuthPage.module.scss';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { StoneCheckbox } from '../../ui/StoneCheckbox';
+import { StoneCheckbox } from '../UI/StoneCheckbox/StoneCheckbox';
 import { useAuth } from '../../hooks/useAuth';
 
 type AuthMode = 'login' | 'register';
@@ -42,6 +42,10 @@ export function AuthPage() {
 
     if (!email.trim() || !password) {
       setError('Заполните все поля');
+      return;
+    }
+
+    if (emailError || passwordError) {
       return;
     }
 

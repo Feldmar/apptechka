@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
 import styles from './StoneCheckbox.module.scss';
-import { BowlIcon } from './icons/BowlIcon';
-import { CheckIcon } from './icons/CheckIcon';
-import { StoneIcon } from './icons/StoneIcon';
+import { BowlIcon } from '../../../ui/icons/BowlIcon';
+import { CheckIcon } from '../../../ui/icons/CheckIcon';
+import { StoneIcon } from '../../../ui/icons/StoneIcon';
 
 type Stone = {
   id: number;
@@ -128,7 +128,7 @@ export const StoneCheckbox = ({
   useEffect(() => {
     onChange?.(isChecked);
   }, [isChecked, onChange]);
-  
+
   const handlePointerDown = (
     event: PointerEvent<HTMLDivElement>,
     id: number,
