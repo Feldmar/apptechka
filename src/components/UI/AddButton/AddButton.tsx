@@ -5,24 +5,38 @@ import MenuItem from '@mui/material/MenuItem';
 import AddIcon from '@mui/icons-material/Add';
 import styles from './AddButton.module.scss';
 
-const options = ['Выбрать дни для приема препарата', '...'];
+const OPTION_SELECT_DATES = 'Выбрать дни для приема препарата';
 
-export default function AddButton() {
+const options = [OPTION_SELECT_DATES, '...'];
+
+type AddButtonProps = {
+  onSelectDates?: () => void;
+};
+
+export default function AddButton({ onSelectDates }: AddButtonProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleOption = (option: string) => {
+    handleClose();
+    if (option === OPTION_SELECT_DATES) {
+      onSelectDates?.();
+    }
   };
 
   return (
     <div className={styles.container}>
       <IconButton
-        aria-label="more"
-        id="long-button"
-        aria-controls={open ? 'long-menu' : undefined}
+        aria-label="Добавить"
+        aria-controls={open ? 'add-menu' : undefined}
         aria-expanded={open}
         aria-haspopup="true"
         onClick={handleClick}
@@ -31,28 +45,19 @@ export default function AddButton() {
         <AddIcon fontSize="large" />
       </IconButton>
       <Menu
-        id="long-menu"
+        id="add-menu"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
         slotProps={{
           paper: {
-            style: {
-              maxHeight: 100,
-              width: 'min-content',
-            },
+            style: { maxHeight: 200, width: 'min-content' },
           },
-          list: {
-            'aria-labelledby': 'long-button',
-          },
+          list: { 'aria-labelledby': 'add-button' },
         }}
       >
         {options.map((option) => (
-          <MenuItem
-            key={option}
-            selected={option === 'Pyxis'}
-            onClick={handleClose}
-          >
+          <MenuItem key={option} onClick={() => handleOption(option)}>
             {option}
           </MenuItem>
         ))}

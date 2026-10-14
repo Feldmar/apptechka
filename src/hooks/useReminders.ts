@@ -22,6 +22,7 @@ export function useReminders() {
         data.map((medication) => ({
           ...medication,
           times: medication.times.map(normalizeTime),
+          dates: medication.dates ?? [],
         })),
       );
     } catch (err) {
@@ -34,7 +35,6 @@ export function useReminders() {
   }, []);
 
   useEffect(() => {
-    // Only run on mount, not on updates
     if (isInitialMount.current) {
       isInitialMount.current = false;
       void loadMedications();
@@ -47,6 +47,7 @@ export function useReminders() {
       dosage: data.dosage.trim(),
       times: data.hasReminder ? data.times.map(normalizeTime) : [],
       hasReminder: data.hasReminder,
+      dates: data.dates ?? [],
     });
 
     setMedications((prev) =>
@@ -99,12 +100,11 @@ export function useReminders() {
   }, []);
 
   useEffect(() => {
-    // Only run on mount for initial check
     if (isInitialMount.current) {
       isInitialMount.current = false;
       checkReminders();
     }
-    
+
     const interval = setInterval(checkReminders, 15_000);
     return () => clearInterval(interval);
   }, [checkReminders]);

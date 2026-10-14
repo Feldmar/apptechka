@@ -16,6 +16,7 @@ import { TimeInput24 } from '../UI/TimeInput24/TimeInput24';
 
 interface MedicationFormProps {
   onAdd: (data: MedicationFormData) => Promise<void>;
+  initialDates?: string[];
 }
 
 const initialForm: MedicationFormData = {
@@ -24,10 +25,17 @@ const initialForm: MedicationFormData = {
   multiplicity: 1,
   times: ['09:00'],
   hasReminder: true,
+  dates: [],
 };
 
-export function MedicationForm({ onAdd }: MedicationFormProps) {
-  const [form, setForm] = useState<MedicationFormData>(initialForm);
+export function MedicationForm({
+  onAdd,
+  initialDates = [],
+}: MedicationFormProps) {
+  const [form, setForm] = useState<MedicationFormData>({
+    ...initialForm,
+    dates: initialDates,
+  });
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -52,9 +60,10 @@ export function MedicationForm({ onAdd }: MedicationFormProps) {
 
     try {
       setSubmitting(true);
-      await onAdd(form);
+      await onAdd({ ...form, dates: initialDates });
       setForm({
         ...initialForm,
+        dates: initialDates,
         times: form.times,
         hasReminder: form.hasReminder,
       });

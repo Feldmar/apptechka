@@ -1,0 +1,33 @@
+@use '../../styles/variables' as *;
+
+.paper {
+  border-radius: $border-radius;
+}
+
+.title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-sm;
+}
+
+.subtitle {
+  margin-top: $spacing-xs;
+}
+
+.datesPreview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-lg;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.dateChip {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba($color-primary, 0.12);
+  color: $color-primary;
+  font-size: 0.75rem;
+  font-weight: $font-weight-medium;
+}

@@ -1,0 +1,15 @@
+@use '../../../styles/variables' as *;
+
+.count {
+  margin-left: $spacing-sm;
+  color: $color-text-secondary;
+}
+.sectionTitle {
+  font-weight: $font-weight-semibold;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}

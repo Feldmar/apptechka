@@ -3,6 +3,7 @@ export interface Medication {
   name: string;
   dosage: string;
   times: string[];
+  dates: string[];
   hasReminder: boolean;
   lastNotifiedDate: string | null;
   createdAt: string;
@@ -13,6 +14,7 @@ export interface CreateMedicationData {
   dosage: string;
   times: string[];
   hasReminder: boolean;
+  dates?: string[];
 }
 
 export interface MedicationFormData {
@@ -21,6 +23,7 @@ export interface MedicationFormData {
   multiplicity: number;
   times: string[];
   hasReminder: boolean;
+  dates?: string[];
 }
 
 export interface Intake {

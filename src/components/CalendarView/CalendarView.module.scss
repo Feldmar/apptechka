@@ -81,6 +81,13 @@
   border-color: $color-primary;
 }
 
+.dayPicked {
+  background: rgba($color-primary, 0.18);
+  border-color: $color-primary;
+  outline: 2px solid $color-primary;
+  outline-offset: -2px;
+}
+
 .dayWithIntakes .dot {
   display: flex;
 }
@@ -103,6 +110,25 @@
   display: flex;
   justify-content: center;
   padding: $spacing-xl 0;
+}
+
+.selectionHint {
+  margin: 0 0 $spacing-md;
+}
+
+.selectionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.selectionActions {
+  display: flex;
+  gap: $spacing-sm;
 }
 
 .detailsTitle {

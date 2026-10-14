@@ -5,6 +5,7 @@ import 'dayjs/locale/ru';
 import isoWeek from 'dayjs/plugin/isoWeek';
 import {
   Alert,
+  Button,
   CircularProgress,
   IconButton,
   Paper,
@@ -23,13 +24,25 @@ dayjs.locale('ru');
 
 const WEEKDAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
-export function CalendarView() {
+type CalendarViewProps = {
+  selectionMode?: boolean;
+  onConfirmSelection?: (dates: string[]) => void;
+  onCancelSelection?: () => void;
+};
+
+export function CalendarView({
+  selectionMode = false,
+  onConfirmSelection,
+  onCancelSelection,
+}: CalendarViewProps) {
   const [currentMonth, setCurrentMonth] = useState(() =>
     dayjs().startOf('month'),
   );
   const [selectedDate, setSelectedDate] = useState(() =>
     dayjs().format('YYYY-MM-DD'),
   );
+
+  const [pickedDates, setPickedDates] = useState<Set<string>>(new Set());
 
   const from = currentMonth.startOf('month').format('YYYY-MM-DD');
   const to = currentMonth.endOf('month').format('YYYY-MM-DD');
@@ -63,6 +76,31 @@ export function CalendarView() {
 
   const selectedIntakes = intakesByDate.get(selectedDate) ?? [];
 
+  const handleDayClick = (dateKey: string) => {
+    if (selectionMode) {
+      setPickedDates((prev) => {
+        const next = new Set(prev);
+        if (next.has(dateKey)) next.delete(dateKey);
+        else next.add(dateKey);
+        return next;
+      });
+      return;
+    }
+    setSelectedDate(dateKey);
+  };
+
+  const handleConfirm = () => {
+    if (pickedDates.size === 0) return;
+    const sorted = Array.from(pickedDates).sort();
+    setPickedDates(new Set());
+    onConfirmSelection?.(sorted);
+  };
+
+  const handleCancel = () => {
+    setPickedDates(new Set());
+    onCancelSelection?.();
+  };
+
   return (
     <div className={styles.root}>
       <Paper className={styles.calendar}>
@@ -88,6 +126,13 @@ export function CalendarView() {
           </IconButton>
         </div>
 
+        {selectionMode && (
+          <Alert severity="info" className={styles.selectionHint}>
+            Выберите дни для приёма препарата. Можно несколько. Нажмите
+            «Сохранить», когда закончите.
+          </Alert>
+        )}
+
         <div className={styles.weekdays}>
           {WEEKDAYS.map((weekday) => (
             <span key={weekday} className={styles.weekday}>
@@ -107,6 +152,7 @@ export function CalendarView() {
               const dayIntakes = intakesByDate.get(dateKey) ?? [];
               const isCurrentMonth = day.month() === currentMonth.month();
               const isSelected = dateKey === selectedDate;
+              const isPicked = pickedDates.has(dateKey);
               const isToday = day.isSame(dayjs(), 'day');
 
               return (
@@ -115,11 +161,12 @@ export function CalendarView() {
                   type="button"
                   className={cn(styles.day, {
                     [styles.dayOutside]: !isCurrentMonth,
-                    [styles.daySelected]: isSelected,
+                    [styles.daySelected]: !selectionMode && isSelected,
+                    [styles.dayPicked]: selectionMode && isPicked,
                     [styles.dayToday]: isToday,
                     [styles.dayWithIntakes]: dayIntakes.length > 0,
                   })}
-                  onClick={() => setSelectedDate(dateKey)}
+                  onClick={() => handleDayClick(dateKey)}
                 >
                   <span>{day.date()}</span>
                   {dayIntakes.length > 0 && (
@@ -130,51 +177,71 @@ export function CalendarView() {
             })}
           </div>
         )}
+
+        {selectionMode && (
+          <div className={styles.selectionBar}>
+            <Typography variant="body2" color="text.secondary">
+              Выбрано: <strong>{pickedDates.size}</strong>
+            </Typography>
+            <div className={styles.selectionActions}>
+              <Button onClick={handleCancel}>Отмена</Button>
+              <Button
+                variant="contained"
+                disabled={pickedDates.size === 0}
+                onClick={handleConfirm}
+              >
+                Сохранить
+              </Button>
+            </div>
+          </div>
+        )}
       </Paper>
 
       {error && <Alert severity="error">{error}</Alert>}
 
-      <Paper className={styles.details}>
-        <Typography variant="h6" className={styles.detailsTitle}>
-          Приёмы за {formatDate(selectedDate)}
-        </Typography>
-
-        {selectedIntakes.length === 0 ? (
-          <Typography color="text.secondary">
-            В этот день приёмов не зафиксировано.
+      {!selectionMode && (
+        <Paper className={styles.details}>
+          <Typography variant="h6" className={styles.detailsTitle}>
+            Приёмы за {formatDate(selectedDate)}
           </Typography>
-        ) : (
-          <ul className={styles.intakeList}>
-            {selectedIntakes.map((intake) => (
-              <li key={intake.id} className={styles.intakeItem}>
-                <div>
-                  <Typography className={styles.intakeName}>
-                    {intake.medicationName}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {intake.dosage} · {formatDateTime(intake.takenAt)}
-                    {!intake.hasReminder && ' · экстренный'}
-                  </Typography>
-                  {intake.note && (
-                    <Typography variant="body2" className={styles.intakeNote}>
-                      {intake.note}
-                    </Typography>
-                  )}
-                </div>
 
-                <IconButton
-                  aria-label="Удалить запись о приёме"
-                  size="small"
-                  color="error"
-                  onClick={() => void removeIntake(intake.id)}
-                >
-                  <DeleteOutlinedIcon fontSize="small" />
-                </IconButton>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Paper>
+          {selectedIntakes.length === 0 ? (
+            <Typography color="text.secondary">
+              В этот день приёмов не зафиксировано.
+            </Typography>
+          ) : (
+            <ul className={styles.intakeList}>
+              {selectedIntakes.map((intake) => (
+                <li key={intake.id} className={styles.intakeItem}>
+                  <div>
+                    <Typography className={styles.intakeName}>
+                      {intake.medicationName}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {intake.dosage} · {formatDateTime(intake.takenAt)}
+                      {!intake.hasReminder && ' · экстренный'}
+                    </Typography>
+                    {intake.note && (
+                      <Typography variant="body2" className={styles.intakeNote}>
+                        {intake.note}
+                      </Typography>
+                    )}
+                  </div>
+
+                  <IconButton
+                    aria-label="Удалить запись о приёме"
+                    size="small"
+                    color="error"
+                    onClick={() => void removeIntake(intake.id)}
+                  >
+                    <DeleteOutlinedIcon fontSize="small" />
+                  </IconButton>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Paper>
+      )}
     </div>
   );
 }

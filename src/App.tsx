@@ -27,8 +27,11 @@ import { useAuth } from './hooks/useAuth';
 import AddButton from './components/UI/AddButton/AddButton';
 import { MedicationForm } from './components/MedicationForm/MedicationForm';
 import { MedicationList } from './components/MedicationList/MedicationList';
+import { MedicationFormDialog } from './components/MedicationFormDialog/MedicationFormDialog';
 
 type TabKey = 'medications' | 'calendar';
+type SelectionState =
+  { mode: 'idle' } | { mode: 'picking' } | { mode: 'form'; dates: string[] };
 
 export default function App() {
   const { user, logout } = useAuth();
@@ -43,6 +46,8 @@ export default function App() {
   } = useReminders();
   const { permission, requestPermission, isSupported, isGranted } =
     useNotificationPermission();
+
+  const [selection, setSelection] = useState<SelectionState>({ mode: 'idle' });
 
   const scheduledMedications = useMemo(
     () => medications.filter((medication) => medication.hasReminder),
@@ -61,7 +66,6 @@ export default function App() {
 
     await addMedication(data);
   };
-
   return (
     <Box className={styles.root}>
       <AppBar position="static" elevation={0}>
@@ -160,8 +164,26 @@ export default function App() {
 
         {tab === 'calendar' && (
           <>
-            <CalendarView />
-            <AddButton />
+            <CalendarView
+              selectionMode={selection.mode === 'picking'}
+              onConfirmSelection={(dates) =>
+                setSelection({ mode: 'form', dates })
+              }
+              onCancelSelection={() => setSelection({ mode: 'idle' })}
+            />
+
+            {selection.mode === 'idle' && (
+              <AddButton
+                onSelectDates={() => setSelection({ mode: 'picking' })}
+              />
+            )}
+
+            <MedicationFormDialog
+              open={selection.mode === 'form'}
+              dates={selection.mode === 'form' ? selection.dates : []}
+              onClose={() => setSelection({ mode: 'idle' })}
+              onAdd={handleAdd}
+            />
           </>
         )}
       </Container>
